@@ -1,0 +1,7 @@
+Classes: 
+	player class
+		Stores player info like damage taken, done, healed, ect.
+
+	Game class
+		Combines multiple characters
+Use command pattern - command interface, command class, reciever class, invoker class
