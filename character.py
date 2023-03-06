@@ -2,20 +2,22 @@ import pandas as pd
 import os
 
 class characters():
-    #todo: pickle, csv
     #create a load from csv option
     #add things for character images, 
 
     #maybe make stat class and use character as the invoker
     def __init__(self, gameDirectory, charName, playerName, totDamDone = 0, totDamTaken = 0, totKills = 0, totDeaths = 0, totHeal = 0, totHits = 0, totMisses = 0, totBruhMoments = 0):
+        #basic character information
         self.charName = charName
         self.playerName = playerName
 
+        #path to folder for character files
         self.directory = "{}/{}".format(self.gameDirectory, self.charName)
         os.mkdir(directory)
 
-        self.currStats = {"session":0, "damDone":totDamDone, "damTaken":totDamTaken, "damHealed":totHeal, "kills":totKills, "deaths":totDeaths, "hits":totHits, "misses":totMisses, "bruhMoments":totBruhMoments}
-        self.totStats = {"damDone":totDamDone, "damTaken":totDamTaken, "damHealed":totHeal, "kills":totKills, "deaths":totDeaths, "hits":totHits, "misses":totMisses, "bruhMoments":totBruhMoments}
+        #series for storing current session stats and total stats for the character
+        self.currStats = pd.series({"session":0, "damDone":totDamDone, "damTaken":totDamTaken, "damHealed":totHeal, "kills":totKills, "deaths":totDeaths, "hits":totHits, "misses":totMisses, "bruhMoments":totBruhMoments})
+        self.totStats = pd.series({"damDone":totDamDone, "damTaken":totDamTaken, "damHealed":totHeal, "kills":totKills, "deaths":totDeaths, "hits":totHits, "misses":totMisses, "bruhMoments":totBruhMoments})
 
         #Set up temporary dataframe to create csv file with the initial stats
         history = pd.DataFrame(columns=['session', 'damDone', 'damTaken', 'damHealed', 'kills', 'deaths', 'hits', 'misses', 'bruhMoments'])
@@ -55,6 +57,10 @@ class characters():
     def updateStat(self, amount, stat):
         self.currStats[stat] += amount
         self.totStats[stat] += amount
+
+    def undoStat(self, amount, stat):
+        self.currStats[stat] -= amount
+        self.currStats[stat] -= amount
 
     def __eq__(self, name):
         if isinstance(name, str):
