@@ -296,7 +296,12 @@ class GameMenu(tk.Frame):
         self.offset += self.offsetIncrease
 
         editListButton = tk.Button(self, height=1, width=self.topButtonWidth, text="Edit Char List", command=self.on_edit_character_list)
-        editListButton.place(x=self.offset, y=0)        
+        editListButton.place(x=self.offset, y=0)
+
+        self.offset += self.offsetIncrease
+
+        editCharButton = tk.Button(self, height=1, width=self.topButtonWidth, text="Edit Char", command=self.on_edit_character)
+        editCharButton.place(x=self.offset, y=0)
 
         self.offset += self.offsetIncrease
 
@@ -406,6 +411,52 @@ class GameMenu(tk.Frame):
 
             popWin.destroy()
 
+    def on_edit_character(self):
+        #make new window for the popup
+        if(self.currCharacter != None):
+            top= tk.Toplevel(self.controller)
+            top.geometry("300x300")
+            top.title("Edit Character")
+
+
+            #add widgets
+            tk.Label(top, text= "Edit Character", font=('Mistral 18 bold')).place(x=20,y=10)
+            tk.Label(top, text= "Char Name: ", font=('Mistral 10')).place(x=150,y=50)
+            nameEntry = tk.Entry(top)
+            nameEntry.insert(0,self.currCharacter.displayName)
+            nameEntry.place(x=20, y=50)
+            tk.Label(top, text= "Player Name: ", font=('Mistral 10')).place(x=150,y=80)
+            playerEntry = tk.Entry(top)
+            playerEntry.insert(0,self.currCharacter.playerName)
+            playerEntry.place(x=20, y=80)
+            tk.Label(top, text= "Color: ", font=('Mistral 10')).place(x=150,y=110)
+            colorEntry = tk.Entry(top)
+            colorEntry.insert(0,self.currCharacter.color)
+            colorEntry.place(x=20, y=110)
+            nameEntry.focus_set()
+
+            editButton1 = tk.Button(top, height=2, width=10, text="Change Character Info", command=lambda: self.editCharacter(nameEntry.get(), playerEntry.get(), colorEntry.get(), top))
+            editButton1.place(x=100, y=150)
+
+    def editCharacter(self, name, player, color, popWin):
+        warning = tk.Label(popWin, text= "", font=('Mistral 12 bold'))
+        warning.place(x=100,y=180)
+
+        if(color == ""):
+            color = '#FFFFFF'
+
+        #check if a string was entered and if the string already exists in the game
+        if(name == "" or player == "" or color == ""):
+            warning.config(text = "Enter valid strings")
+        else:
+            #adds the game to the game list and updates the drop down menu
+            self.currCharacter.displayName = name
+            self.currCharacter.playerName = player
+            self.currCharacter.color = color
+            self.placeCharacterButtons()
+
+            popWin.destroy()
+
     def on_edit_character_list(self):
         top= tk.Toplevel(self.controller)
         top.geometry("300x300")
@@ -500,7 +551,7 @@ class GameMenu(tk.Frame):
 
     #add frame background color switch
     def on_switch_character(self, char):
-        self.title.set(char.charName)
+        self.title.set(char.displayName)
         self.config(background=char.color)
         self.currCharacter = char
         self.stats.set(self.currCharacter.currString())
@@ -529,7 +580,7 @@ class GameMenu(tk.Frame):
         j = 0
         self.charButtons.clear()
         for i in self.game.activeCharacters:
-            temp = tk.Button(self, height=1, width=self.topButtonWidth, text=i.charName, bg = i.color)
+            temp = tk.Button(self, height=1, width=self.topButtonWidth, text=i.displayName, bg = i.color)
             self.charButtons.append(temp)
             self.charButtons[j].place(x=self.offset, y=0)
             self.charButtons[j].configure(command=lambda t = i: self.on_switch_character(t))
@@ -623,7 +674,7 @@ class StatsMenu(tk.Frame):
         self.stats['accuracy'] = np.where(df['hits'] + df['misses'] > 0, df['hits'] / (df['hits'] + df['misses']), 0)
         
         self.selectiveStats = self.stats
-        self.statOptions = tk.OptionMenu(self, self.optionTwo, "damDone", *self.stats.columns[5:], command=self.on_show_stats)
+        self.statOptions = tk.OptionMenu(self, self.optionTwo, "damDone", *self.stats.columns[4:], command=self.on_show_stats)
         self.statOptions.place(relx=0.3, rely=0.2)
         self.placeCharacterToggles()
         self.on_show_stats()

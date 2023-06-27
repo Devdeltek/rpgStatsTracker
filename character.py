@@ -9,6 +9,7 @@ class characters():
     def __init__(self, gameDirectory, charName, playerName, color="#FFFFFF", totDamDone = 0, totDamTaken = 0, totKills = 0, totDeaths = 0, totHeal = 0, totHits = 0, totMisses = 0, totBruhMoments = 0):
         #basic character information
         self.charName = charName
+        self.displayName = charName
         self.playerName = playerName
         self.color = color
 
@@ -34,7 +35,7 @@ class characters():
         temp = pd.read_csv(infile)
         history = temp.loc[temp['session']==sessionNum]
         history.insert(0, "color", [self.color], True)
-        history.insert(0, "charName", [self.charName], True)
+        history.insert(0, "charName", [self.displayName], True)
         history.insert(0, "playerName", [self.playerName], True)
         return (history)
 
