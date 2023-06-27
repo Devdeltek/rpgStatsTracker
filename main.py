@@ -626,9 +626,11 @@ class StatsMenu(tk.Frame):
         self.characters = []
         self.charButtons = []
         self.charsToShow = []
+        self.usePlayers = tk.IntVar(value=0)
 
         self.statsLabel = tk.Text(self, height = 12, width = 35)
         self.statsLabel.place(relx=.6, rely = .1)
+
 
         removeActiveButton = tk.Button(self, height=2, width=10, text="show stats", command=lambda: self.on_get_stats(self.optionOne.get()))
         removeActiveButton.place(relx=.1, rely=.2)
@@ -640,11 +642,15 @@ class StatsMenu(tk.Frame):
         self.optionTwo = tk.StringVar(value="damDone")
 
 
+
         label = tk.Label(self, textvariable=self.title, font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
 
         label1 = tk.Label(self, text="Session #, 0 for totals")
         label1.place(relx=0.15, rely=0.15)
+
+        players = tk.Checkbutton(self, text="Players", variable = self.usePlayers, command=lambda: self.on_get_stats(self.optionOne.get())).place(relx=.8,rely=.05)
+
 
 
         button = tk.Button(self, text="Go back to home page",
@@ -671,8 +677,12 @@ class StatsMenu(tk.Frame):
         self.stats = df
         self.stats = self.stats.set_index('charName')
 
-        self.stats['accuracy'] = np.where(df['hits'] + df['misses'] > 0, df['hits'] / (df['hits'] + df['misses']), 0)
-        
+        if(self.usePlayers.get() != 0):
+            self.stats = self.stats.groupby(['playerName'], as_index=True).sum()
+            self.stats['color'] = [x[:7] for x in self.stats['color']] 
+
+        self.stats['accuracy'] = np.where(self.stats['hits'] + self.stats['misses'] > 0, self.stats['hits'] / (self.stats['hits'] + self.stats['misses']), 0)
+
         self.selectiveStats = self.stats
         self.statOptions = tk.OptionMenu(self, self.optionTwo, "damDone", *self.stats.columns[4:], command=self.on_show_stats)
         self.statOptions.place(relx=0.3, rely=0.2)
