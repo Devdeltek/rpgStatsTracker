@@ -1,7 +1,23 @@
-Classes: 
-	player class
-		Stores player info like damage taken, done, healed, ect.
+Ideas for improving:
+	Make a new class for statistics that has a map of statsnames and values - will allow for different stat tracking depending on the game
 
-	Game class
-		Combines multiple characters
-Use command pattern - command interface, command class, reciever class, invoker class
+	make the character class the invoker for the command design pattern and the stat class the reciever
+
+	3 commands total - one for stats that are added to, one for stats that are incremented, and one for string stats
+
+	make a game main menu that is seperate from the game session frame
+
+	store everything for characters in a csv, don't think I need to pickle them
+
+	0th element will be totals, 1st element will be initialized stats
+
+	Get games and characters dynamically from the folders
+
+	Make a list of all commands for all character throughout session with timestamps for cool display
+	
+	Store elements in more of a database structure for complex querying
+
+
+	Include display name in characters, use that for labels instead fo char name to allow edit character button
+
+	Add player toggle to show stats, should be simple with groupby

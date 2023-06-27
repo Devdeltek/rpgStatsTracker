@@ -22,4 +22,7 @@ class CharCommand(Command):
     def unExecute(self) -> None:
         self._receiver.undoStat(self.amount, self.stat)
 
+    def toString(self):
+        return self._receiver.charName + ": " + self.stat + "+=" + str(self.amount)
+
 
