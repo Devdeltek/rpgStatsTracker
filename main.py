@@ -637,7 +637,6 @@ class StatsMenu(tk.Frame):
 
         self.title = tk.StringVar(value="Empty Game, should not be here")
 
-
         self.optionOne = tk.IntVar(value=0)
         self.optionTwo = tk.StringVar(value="damDone")
 
@@ -649,7 +648,7 @@ class StatsMenu(tk.Frame):
         label1 = tk.Label(self, text="Session #, 0 for totals")
         label1.place(relx=0.15, rely=0.15)
 
-        players = tk.Checkbutton(self, text="Players", variable = self.usePlayers, command=lambda: self.on_get_stats(self.optionOne.get())).place(relx=.8,rely=.05)
+        players = tk.Checkbutton(self, text="Players", variable = self.usePlayers, command=lambda: self.on_get_stats(self.optionOne.get())).place(relx=.8,rely=.03)
 
 
 
