@@ -160,8 +160,8 @@ class MainMenu(tk.Frame):
         top.title("Add Game")
 
         #add widgets
-        tk.Label(top, text= "Create New Game", font=('Mistral 18 bold')).place(x=20,y=10)
-        tk.Label(top, text= "Enter a Unique Name", font=('Mistral 10')).place(x=150,y=50)
+        tk.Label(top, text= "Create New Game", font=('Arial 18 bold')).place(x=20,y=10)
+        tk.Label(top, text= "Enter a Unique Name", font=('Arial 10')).place(x=150,y=50)
         nameEntry = tk.Entry(top)
         nameEntry.place(x=20, y=50)
         nameEntry.focus_set()
@@ -171,7 +171,7 @@ class MainMenu(tk.Frame):
 
     #Create the game object and pickle it in the right location, add the game name to the gamelist, destroy the child menu
     def on_create_game(self, name, popWin):
-        warning = tk.Label(popWin, text= "", font=('Mistral 12 bold'))
+        warning = tk.Label(popWin, text= "", font=('Arial 12 bold'))
         warning.place(x=100,y=80)
 
         #check if a string was entered and if the string already exists in the gamelist
@@ -239,7 +239,7 @@ class GameMenu(tk.Frame):
 
         removeCommand = tk.Button(self, height=1, width=15, text="Remove Command", command=lambda: self.on_remove_command(self.removeEntry.get()))
 
-        self.commandLabel = tk.Text(self)
+        self.commandLabel = tk.Text(self, font="Arial 10")
         self.commandLabel.place(relx=.6, rely = .1)
 
         displayTots = tk.Label(self, textvariable=self.stats)
@@ -248,7 +248,7 @@ class GameMenu(tk.Frame):
         label = tk.Label(self, textvariable=self.title, font=controller.title_font)
         label.place(relx = .5, rely = .15, anchor=tk.CENTER)
 
-        notice = tk.Label(self, text="ctrl-z to undo, ctrl-y to redo. Undone commands marked with X")
+        notice = tk.Label(self, text="ctrl-z to undo, ctrl-y to redo. Undone commands are crossed out")
         notice.place(relx = .7, rely = .82, anchor=tk.CENTER)
 
         notice2 = tk.Label(self, text="Only exit with cancel/end session buttons for this screne")
@@ -336,22 +336,29 @@ class GameMenu(tk.Frame):
             self.valueEntry.delete(0, 'end')
             self.command_pivot += 1
             self.updateCommandList()
-        except:
-            print("Bad input")
+        except Exception as error:
+            print("Bad input", error)
         
 
     def updateCommandList(self):
         self.commandLabel.delete("1.0", "end")
+        self.commandLabel.tag_configure("highlight", background="OliveDrab1", foreground="black")
         temp = ""
         i = 0
-        for s in self.listOfCommands:
-            temp += str(i) + ": "
+        length = len(self.listOfCommands)-1
+        for s in reversed(self.listOfCommands):
+            temp += str(length-i) + ": "
             temp += s
-            if(i > self.command_pivot):
-                temp += 'X'
-            temp += "\n"
+            formatted = temp
+            if(length-i > self.command_pivot):
+                formatted = '\u0338'.join(temp) + '\u0338'
+            formatted += '\n'
             i += 1
-            self.commandLabel.insert(tk.END, temp)
+            self.commandLabel.insert(tk.END, formatted)
+            if(self.currCharacter.charName in temp):
+                tempStart = i+0.0
+                tempEnd = i+1.0
+                self.commandLabel.tag_add("highlight", tempStart, tempEnd)
             temp = ""
 
         self.stats.set(self.currCharacter.currString())
@@ -364,14 +371,14 @@ class GameMenu(tk.Frame):
 
 
         #add widgets
-        tk.Label(top, text= "Create New Character", font=('Mistral 18 bold')).place(x=20,y=10)
-        tk.Label(top, text= "Enter a Unique Name", font=('Mistral 10')).place(x=150,y=50)
+        tk.Label(top, text= "Create New Character", font=('Arial 18 bold')).place(x=20,y=10)
+        tk.Label(top, text= "Enter a Unique Name", font=('Arial 10')).place(x=150,y=50)
         nameEntry = tk.Entry(top)
         nameEntry.place(x=20, y=50)
-        tk.Label(top, text= "Enter a Player Name", font=('Mistral 10')).place(x=150,y=80)
+        tk.Label(top, text= "Enter a Player Name", font=('Arial 10')).place(x=150,y=80)
         playerEntry = tk.Entry(top)
         playerEntry.place(x=20, y=80)
-        tk.Label(top, text= "Optional Color", font=('Mistral 10')).place(x=150,y=110)
+        tk.Label(top, text= "Optional Color", font=('Arial 10')).place(x=150,y=110)
         colorEntry = tk.Entry(top)
         colorEntry.place(x=20, y=110)
         nameEntry.focus_set()
@@ -380,7 +387,7 @@ class GameMenu(tk.Frame):
         createButton.place(x=100, y=150)
 
     def on_create_character(self, name, player, color, popWin):
-        warning = tk.Label(popWin, text= "", font=('Mistral 12 bold'))
+        warning = tk.Label(popWin, text= "", font=('Arial 12 bold'))
         warning.place(x=100,y=180)
 
         if(color == ""):
@@ -420,16 +427,16 @@ class GameMenu(tk.Frame):
 
 
             #add widgets
-            tk.Label(top, text= "Edit Character", font=('Mistral 18 bold')).place(x=20,y=10)
-            tk.Label(top, text= "Char Name: ", font=('Mistral 10')).place(x=150,y=50)
+            tk.Label(top, text= "Edit Character", font=('Arial 18 bold')).place(x=20,y=10)
+            tk.Label(top, text= "Char Name: ", font=('Arial 10')).place(x=150,y=50)
             nameEntry = tk.Entry(top)
             nameEntry.insert(0,self.currCharacter.displayName)
             nameEntry.place(x=20, y=50)
-            tk.Label(top, text= "Player Name: ", font=('Mistral 10')).place(x=150,y=80)
+            tk.Label(top, text= "Player Name: ", font=('Arial 10')).place(x=150,y=80)
             playerEntry = tk.Entry(top)
             playerEntry.insert(0,self.currCharacter.playerName)
             playerEntry.place(x=20, y=80)
-            tk.Label(top, text= "Color: ", font=('Mistral 10')).place(x=150,y=110)
+            tk.Label(top, text= "Color: ", font=('Arial 10')).place(x=150,y=110)
             colorEntry = tk.Entry(top)
             colorEntry.insert(0,self.currCharacter.color)
             colorEntry.place(x=20, y=110)
@@ -439,7 +446,7 @@ class GameMenu(tk.Frame):
             editButton1.place(x=100, y=150)
 
     def editCharacter(self, name, player, color, popWin):
-        warning = tk.Label(popWin, text= "", font=('Mistral 12 bold'))
+        warning = tk.Label(popWin, text= "", font=('Arial 12 bold'))
         warning.place(x=100,y=180)
 
         if(color == ""):
@@ -464,7 +471,7 @@ class GameMenu(tk.Frame):
 
 
         #add widgets
-        tk.Label(top, text= "Character List", font=('Mistral 18 bold')).place(x=20,y=10)
+        tk.Label(top, text= "Character List", font=('Arial 18 bold')).place(x=20,y=10)
 
         optionOne = tk.StringVar(value="choose")
         optionTwo = tk.StringVar(value="choose")
@@ -554,6 +561,7 @@ class GameMenu(tk.Frame):
         self.title.set(char.displayName)
         self.config(background=char.color)
         self.currCharacter = char
+        self.updateCommandList()
         self.stats.set(self.currCharacter.currString())
 
 
@@ -632,12 +640,12 @@ class StatsMenu(tk.Frame):
         self.statsLabel.place(relx=.6, rely = .1)
 
 
-        removeActiveButton = tk.Button(self, height=2, width=10, text="show stats", command=lambda: self.on_get_stats(self.optionOne.get()))
+        removeActiveButton = tk.Button(self, height=2, width=10, text="show stats", command=lambda: self.on_get_stats(int(self.optionOne.get())))
         removeActiveButton.place(relx=.1, rely=.2)
 
         self.title = tk.StringVar(value="Empty Game, should not be here")
 
-        self.optionOne = tk.IntVar(value=0)
+        self.optionOne = tk.StringVar(value=0)
         self.optionTwo = tk.StringVar(value="damDone")
 
 
@@ -648,7 +656,7 @@ class StatsMenu(tk.Frame):
         label1 = tk.Label(self, text="Session #, 0 for totals")
         label1.place(relx=0.15, rely=0.15)
 
-        players = tk.Checkbutton(self, text="Players", variable = self.usePlayers, command=lambda: self.on_get_stats(self.optionOne.get())).place(relx=.8,rely=.03)
+        players = tk.Checkbutton(self, text="Players", variable = self.usePlayers, command=lambda: self.on_get_stats(int(self.optionOne.get()))).place(relx=.8,rely=.03)
 
 
 
@@ -664,7 +672,7 @@ class StatsMenu(tk.Frame):
         self.game = game
         self.characters = self.game.getStats()
         self.title.set(self.game.name)
-        self.sessionOptions = tk.OptionMenu(self, self.optionOne, 0, *range(1, self.game.sessionNum+1))
+        self.sessionOptions = ttk.Combobox(self, textvariable=self.optionOne, values=[*range(0, self.game.sessionNum+1)], width=5)
         self.sessionOptions.place(relx=0.2, rely=0.2)
 
     def on_get_stats(self, sessionNum):
@@ -681,6 +689,9 @@ class StatsMenu(tk.Frame):
             self.stats['color'] = [x[:7] for x in self.stats['color']] 
 
         self.stats['accuracy'] = np.where(self.stats['hits'] + self.stats['misses'] > 0, self.stats['hits'] / (self.stats['hits'] + self.stats['misses']), 0)
+        self.stats['KD'] = self.stats['kills'] / (self.stats['deaths'] + 1)
+        self.stats['damDoneToTaken'] = np.where(self.stats['damTaken'] > 0, self.stats['damDone'] / (self.stats['damTaken']), self.stats['damDone']/.001)
+
 
         self.selectiveStats = self.stats
         self.statOptions = tk.OptionMenu(self, self.optionTwo, "damDone", *self.stats.columns[4:], command=self.on_show_stats)
@@ -698,12 +709,22 @@ class StatsMenu(tk.Frame):
         self.statsLabel.delete("1.0", "end")
         temp = ""
         temp += statName + "\n"
-        for index, row in self.stats.iterrows():
+        statTotal = 0
+        i = 0
+        for index, row in self.selectiveStats.iterrows():
             temp += index + ": "
             temp += str(row[statName])
             temp += "\n"
+            statTotal += row[statName]
+            i += 1
             self.statsLabel.insert(tk.END, temp)
             temp = ""
+
+        if(statName == "accuracy" or statName == "KD" or statName == "damDoneToTaken"):
+            statTotal /= i
+        temp = "Party Total: " + str(statTotal)
+        self.statsLabel.insert(tk.END, temp)
+        temp = ""
 
     def updateGraphs(self, statNames):
         if((self.selectiveStats[statNames] == 0).all()):
@@ -714,7 +735,7 @@ class StatsMenu(tk.Frame):
         a1 = f.add_subplot(122)
         a1.set_title('bar graph')
 
-        a.pie(self.selectiveStats[statNames], labels = self.selectiveStats.index, colors = self.selectiveStats["color"])
+        a.pie(self.selectiveStats[statNames], labels = self.selectiveStats.index, colors = self.selectiveStats["color"], autopct="%1.0f%%")
         a1.bar(self.selectiveStats.index, self.selectiveStats[statNames], color = self.selectiveStats["color"])
 
         canvas = FigureCanvasTkAgg(f, self)
@@ -731,7 +752,7 @@ class StatsMenu(tk.Frame):
                 self.selectiveStats = self.selectiveStats.drop(axis=0, labels=self.selectiveStats.index[i])
                 i -= 1
             i += 1
-
+        self.updateStatList(self.optionTwo.get())
         self.updateGraphs(self.optionTwo.get())
 
 
