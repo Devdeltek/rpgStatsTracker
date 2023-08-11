@@ -237,9 +237,9 @@ class GameMenu(tk.Frame):
         self.removeEntry = tk.Entry(self)
         self.removeEntry.place(relx=.6, rely=.75)
 
-        removeCommand = tk.Button(self, height=1, width=15, text="Remove Command", command=lambda: self.on_remove_command(self.removeEntry.get()))
+        removeCommand = tk.Button(self, height=1, width=15, text="Remove Entry", command=lambda: self.on_remove_command(self.removeEntry.get()))
 
-        self.commandLabel = tk.Text(self, font="Arial 10")
+        self.commandLabel = tk.Text(self, font="Arial 10", state=tk.DISABLED)
         self.commandLabel.place(relx=.6, rely = .1)
 
         displayTots = tk.Label(self, textvariable=self.stats)
@@ -248,7 +248,7 @@ class GameMenu(tk.Frame):
         label = tk.Label(self, textvariable=self.title, font=controller.title_font)
         label.place(relx = .5, rely = .15, anchor=tk.CENTER)
 
-        notice = tk.Label(self, text="ctrl-z to undo, ctrl-y to redo. Undone commands are crossed out")
+        notice = tk.Label(self, text="ctrl-z to undo, ctrl-y to redo. Undone entries are crossed out")
         notice.place(relx = .7, rely = .82, anchor=tk.CENTER)
 
         notice2 = tk.Label(self, text="Only exit with cancel/end session buttons for this screne")
@@ -341,6 +341,7 @@ class GameMenu(tk.Frame):
         
 
     def updateCommandList(self):
+        self.commandLabel.config(state= tk.NORMAL)
         self.commandLabel.delete("1.0", "end")
         self.commandLabel.tag_configure("highlight", background="OliveDrab1", foreground="black")
         temp = ""
@@ -351,7 +352,7 @@ class GameMenu(tk.Frame):
             temp += s
             formatted = temp
             if(length-i > self.command_pivot):
-                formatted = '\u0338'.join(temp) + '\u0338'
+                formatted = '\u0336'.join(temp) + '\u0336'
             formatted += '\n'
             i += 1
             self.commandLabel.insert(tk.END, formatted)
@@ -362,6 +363,7 @@ class GameMenu(tk.Frame):
             temp = ""
 
         self.stats.set(self.currCharacter.currString())
+        self.commandLabel.config(state=tk.DISABLED)
 
     def on_new_character(self):
         #make new window for the popup
